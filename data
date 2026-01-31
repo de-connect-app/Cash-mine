@@ -1,0 +1,91 @@
+// Load saved data or start fresh
+let credits = parseInt(localStorage.getItem("credits")) || 0;
+let plays = parseInt(localStorage.getItem("plays")) || 0;
+
+// Grab elements
+const creditsEl = document.getElementById("credits");
+const playsEl = document.getElementById("plays");
+const statusEl = document.getElementById("status");
+const progressBar = document.getElementById("progress-bar");
+const mineBtn = document.getElementById("mineBtn");
+
+let mining = false;
+
+// Update dashboard
+function updateUI() {
+  creditsEl.innerText = credits;
+  playsEl.innerText = plays;
+
+  if (credits >= 5000 && plays >= 3) {
+    statusEl.innerText = "Qualified";
+    statusEl.style.color = "lime";
+  } else {
+    statusEl.innerText = "Not Qualified";
+    statusEl.style.color = "red";
+  }
+}
+
+// Mine game
+function startMine() {
+  if (mining) return;
+  mining = true;
+
+  let timeLeft = 15;
+  let minedCredits = 0;
+
+  // Timer
+  const timerInterval = setInterval(() => {
+    if (timeLeft <= 0) {
+      clearInterval(timerInterval);
+      mining = false;
+      credits += minedCredits;
+      plays += 1;
+      localStorage.setItem("credits", credits);
+      localStorage.setItem("plays", plays);
+      updateUI();
+      progressBar.style.width = "0%";
+      alert(`Mining done! You earned ${minedCredits} credits.`);
+      return;
+    }
+    statusEl.innerText = `Mining... ${timeLeft}s`;
+    statusEl.style.color = "orange";
+    timeLeft--;
+  }, 1000);
+
+  // Click-to-mine
+  function mineClick() {
+    if (!mining) return;
+    let gain = Math.floor(Math.random() * 100) + 50;
+    minedCredits += gain;
+    creditsEl.innerText = credits + minedCredits;
+
+    // Update progress bar (max 1500 credits per round for visualization)
+    let percent = Math.min((minedCredits / 1500) * 100, 100);
+    progressBar.style.width = percent + "%";
+  }
+
+  // Use the big Mine button for mining
+  mineBtn.addEventListener("click", mineClick);
+}
+
+// Redeem button
+function redeem() {
+  if (credits >= 5000 && plays >= 3) {
+    // Reset credits and plays after redeem
+    localStorage.setItem('credits', 0);
+    localStorage.setItem('plays', 0);
+
+    // Go to redeem page
+    window.location.href = "redeem.html";
+  } else {
+    alert("You are not qualified yet. Earn more credits!");
+  }
+}
+
+// How to Qualify button
+function howTo() {
+  alert("To qualify:\n• Earn at least 5,000 credits\n• Play at least 3 times");
+}
+
+// Initialize dashboard
+updateUI();

@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Redeem - CASH-MINE</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <div class="container">
+    <h1>Redeem Rewards</h1>
+    <p>Fill your details to claim your reward</p>
+
+    <form id="redeemForm">
+      <label for="name">Full Name</label><br>
+      <input type="text" id="name" placeholder="Your Full Name" required><br>
+
+      <label for="bank">Bank Name</label><br>
+      <input type="text" id="bank" placeholder="Your Bank Name" required><br>
+
+      <label for="account">Account Number</label><br>
+      <input type="text" id="account" placeholder="Your Account Number" required><br>
+
+      <button type="submit">Submit & Withdraw</button>
+    </form>
+
+    <p id="message" style="margin-top:20px; font-weight:bold;"></p>
+  </div>
+
+  <!-- Withdraw popup -->
+  <div id="popup" style="
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: #1f6fff;
+    color: white;
+    padding: 30px 50px;
+    border-radius: 15px;
+    font-size: 22px;
+    display: none;
+    box-shadow: 0 0 50px rgba(0,0,0,0.8);
+    z-index: 1000;
+    text-align: center;
+  ">
+    💸 Withdraw Successful! 💸
+  </div>
+
+  <script>
+    const form = document.getElementById('redeemForm');
+    const message = document.getElementById('message');
+    const popup = document.getElementById('popup');
+
+    form.addEventListener('submit', function(e) {
+      e.preventDefault();
+
+      const name = document.getElementById('name').value;
+      const bank = document.getElementById('bank').value;
+      const account = document.getElementById('account').value;
+
+      if(name && bank && account) {
+        // Save to localStorage for testing
+        localStorage.setItem('redeemName', name);
+        localStorage.setItem('redeemBank', bank);
+        localStorage.setItem('redeemAccount', account);
+
+        // Animate success message
+        message.style.color = 'lime';
+        message.style.opacity = 0;
+        message.innerText = "Request submitted! Processing your reward...";
+        
+        let opacity = 0;
+        const fadeInterval = setInterval(() => {
+          opacity += 0.05;
+          message.style.opacity = opacity;
+          if(opacity >= 1) clearInterval(fadeInterval);
+        }, 30);
+
+        // Clear form after a short delay
+        setTimeout(() => {
+          form.reset();
+        }, 500);
+
+        // Show Withdraw popup
+        popup.style.display = "block";
+        popup.style.opacity = 0;
+        let popOpacity = 0;
+        const popInterval = setInterval(() => {
+          popOpacity += 0.05;
+          popup.style.opacity = popOpacity;
+          if(popOpacity >= 1) clearInterval(popInterval);
+        }, 30);
+
+        // Hide popup after 2 seconds
+        setTimeout(() => {
+          let fadeOut = 1;
+          const fadeInterval = setInterval(() => {
+            fadeOut -= 0.05;
+            popup.style.opacity = fadeOut;
+            if(fadeOut <= 0) {
+              clearInterval(fadeInterval);
+              popup.style.display = "none";
+            }
+          }, 30);
+        }, 2000);
+
+      } else {
+        message.style.color = 'red';
+        message.innerText = "Please fill all fields!";
+      }
+    });
+  </script>
+
+</body>
+</html>
