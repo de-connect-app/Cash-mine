@@ -1,105 +1,96 @@
-// Load saved data or start fresh
-let credits = parseInt(localStorage.getItem("credits")) || 0;
-let plays = parseInt(localStorage.getItem("plays")) || 0;
+// ===========================
+// CASH-MINE APP.JS
+// ===========================
 
-// Grab elements
-const creditsEl = document.getElementById("credits");
-const playsEl = document.getElementById("plays");
-const statusEl = document.getElementById("status");
-const progressBar = document.getElementById("progress-bar");
-const mineBtn = document.getElementById("mineBtn");
-const restartBtn = document.getElementById("restartBtn");
+// Load saved data
+let points = Number(localStorage.getItem('points')) || 0;
+let plays = Number(localStorage.getItem('plays')) || 0;
 
-let mining = false;
-let minedCredits = 0;
-let timerInterval = null;
+// Display user info from login
+document.getElementById('userPhone').innerText =
+  localStorage.getItem('userPhone') || 'Guest';
 
-// Update dashboard
+updateUI();
+
+// ---------------------------
+// Update Dashboard
+// ---------------------------
 function updateUI() {
-  creditsEl.innerText = credits;
-  playsEl.innerText = plays;
+  document.getElementById('points').innerText = points;
+  document.getElementById('plays').innerText = plays;
 
-  if (credits >= 5000 && plays >= 3) {
-    statusEl.innerText = "Qualified";
-    statusEl.style.color = "lime";
-  } else {
-    statusEl.innerText = "Not Qualified";
-    statusEl.style.color = "red";
-  }
-  progressBar.style.width = mining ? Math.min((minedCredits/1500)*100,100)+"%" : "0%";
+  let naira = Math.floor((points / 100) * 150);
+  document.getElementById('naira').innerText = naira;
+
+  let progress = Math.min((points / 500) * 100, 100);
+  document.getElementById('progressBar').style.width = progress + '%';
+
+  document.getElementById('status').innerText =
+    points >= 500 ? 'Qualified' : 'Not Qualified';
 }
 
-// Start mining
-function startMine() {
-  if (mining) return; // Prevent multiple starts
-  mining = true;
-  minedCredits = 0;
-  let timeLeft = 15;
+// ---------------------------
+// Mine Button
+// ---------------------------
+function mine() {
+  points += 100;
+  plays += 1;
 
-  statusEl.innerText = `Mining... ${timeLeft}s`;
-  statusEl.style.color = "orange";
+  localStorage.setItem('points', points);
+  localStorage.setItem('plays', plays);
 
-  // Timer countdown
-  timerInterval = setInterval(() => {
-    timeLeft--;
-    statusEl.innerText = `Mining... ${timeLeft}s`;
-
-    if (timeLeft <= 0) {
-      clearInterval(timerInterval);
-      mining = false;
-      credits += minedCredits;
-      plays += 1;
-      localStorage.setItem("credits", credits);
-      localStorage.setItem("plays", plays);
-      updateUI();
-      alert(`Mining done! You earned ${minedCredits} credits.`);
-    }
-  }, 1000);
+  updateUI();
 }
 
-// Mine button click increments credits while mining
-mineBtn.addEventListener("click", () => {
-  if (!mining) {
-    startMine(); // Start mining if not started
+// ---------------------------
+// Show Withdraw Form
+// ---------------------------
+function showWithdraw() {
+  document.getElementById('withdrawForm').style.display = 'block';
+  document.getElementById('whatsappBtn').style.display = 'none'; // Hide WhatsApp initially
+}
+
+// ---------------------------
+// Submit Withdraw Details
+// ---------------------------
+function submitWithdraw() {
+  const bank = document.getElementById('bank').value.trim();
+  const account = document.getElementById('account').value.trim();
+  const phone = document.getElementById('phone').value.trim();
+
+  if (!bank || !account || !phone) {
+    alert('Please fill all fields');
     return;
   }
 
-  // Only add credits while mining
-  let gain = Math.floor(Math.random() * 100) + 50;
-  minedCredits += gain;
-  updateUI();
-});
+  // Save info in localStorage (optional)
+  localStorage.setItem('bank', bank);
+  localStorage.setItem('account', account);
+  localStorage.setItem('phone', phone);
 
-// Redeem button
-function redeem() {
-  if (credits >= 5000 && plays >= 3) {
-    localStorage.setItem('credits', 0);
-    localStorage.setItem('plays', 0);
-    window.location.href = "redeem.html";
-  } else {
-    alert("You are not qualified yet. Earn more credits!");
-  }
+  alert("Your details have been submitted.\nPlease follow our WhatsApp channel for your code and instructions on how to withdraw.");
+
+  // Show WhatsApp button
+  document.getElementById('whatsappBtn').style.display = 'block';
 }
 
-// How to Qualify button
+// ---------------------------
+// Send to WhatsApp Channel
+// ---------------------------
+function sendToWhatsApp() {
+  const url = "https://whatsapp.com/channel/0029Vb5zfLhEKyZQG98VNt2V"; // Updated channel
+  window.open(url, "_blank");
+}
+
+// ---------------------------
+// How to Qualify Button
+// ---------------------------
 function howTo() {
-  alert("To qualify:\n• Earn at least 5,000 credits\n• Play at least 3 times");
+  alert(
+    "How to qualify:\n\n" +
+    "• Mine points\n" +
+    "• Reach at least 500 points\n" +
+    "• Click Withdraw\n" +
+    "• Follow our WhatsApp channel to get your code and instructions"
+  );
 }
-
-// Restart button
-restartBtn.addEventListener("click", () => {
-  if(confirm("Are you sure you want to restart? This will reset credits and plays.")) {
-    localStorage.setItem('credits', 0);
-    localStorage.setItem('plays', 0);
-    credits = 0;
-    plays = 0;
-    minedCredits = 0;
-    mining = false;
-    clearInterval(timerInterval);
-    updateUI();
-    alert("Game has been reset. You can start mining again!");
-  }
-});
-
-// Initialize dashboard
-updateUI();

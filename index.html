@@ -1,81 +1,137 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>CASH-MINE</title>
-  <link rel="stylesheet" href="style.css">
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: #111;
-      color: white;
-      text-align: center;
-    }
-    .container {
-      max-width: 500px;
-      margin: 50px auto;
-      padding: 20px;
-      background: #222;
-      border-radius: 15px;
-      box-shadow: 0 0 20px rgba(0,0,0,0.8);
-      position: relative;
-    }
-    .buttons button {
-      margin: 10px;
-      padding: 15px 25px;
-      font-size: 18px;
-      border: none;
-      border-radius: 12px;
-      cursor: pointer;
-      background: #1f6fff;
-      color: white;
-      transition: all 0.1s ease;
-    }
-    /* Mine button click animation */
-    #mineBtn:active {
-      transform: scale(1.2);
-      background-color: #33a1ff;
-    }
-    #progress-container {
-      margin: 20px 0;
-      background:#333;
-      border-radius:12px;
-      height:30px;
-      width:90%;
-      margin-left:auto;
-      margin-right:auto;
-    }
-    #progress-bar {
-      height:100%;
-      width:0%;
-      background:#1f6fff;
-      border-radius:12px;
-      transition: width 0.2s ease;
-    }
-  </style>
+<meta charset="UTF-8">
+<title>Cash-MINE</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+body{
+  margin:0;
+  font-family: Arial, sans-serif;
+  background:#081c3a;
+  color:#000;
+}
+
+.app-name{
+  position:fixed;
+  top:10px;
+  right:15px;
+  font-weight:bold;
+  color:#000;
+}
+
+.container{
+  max-width:420px;
+  margin:80px auto;
+}
+
+.card{
+  background:#fff;
+  padding:20px;
+  border-radius:12px;
+  margin-bottom:15px;
+}
+
+.actions button{
+  width:100%;
+  padding:14px;
+  margin-top:10px;
+  border:none;
+  border-radius:10px;
+  font-size:16px;
+  background:#4da3ff;
+  color:#fff;
+  cursor:pointer;
+}
+
+#withdrawForm{
+  display:none;
+}
+
+input{
+  width:100%;
+  padding:12px;
+  margin:8px 0;
+  font-size:15px;
+}
+
+.progress{
+  background:#ddd;
+  height:10px;
+  border-radius:10px;
+  overflow:hidden;
+}
+
+.progress-bar{
+  height:100%;
+  width:0%;
+  background:#1f6fff;
+}
+
+/* WhatsApp button hidden initially */
+#whatsappBtn{
+  display:none;
+  width:100%;
+  padding:12px;
+  margin-top:10px;
+  font-size:16px;
+  border:none;
+  border-radius:10px;
+  background:#25D366;
+  color:white;
+  cursor:pointer;
+}
+</style>
 </head>
+
 <body>
 
-  <div class="container">
-    <h1>CASH-MINE</h1>
+<div class="app-name">Cash‑MINE</div>
 
-    <p>Credits Balance: <strong><span id="credits">0</span></strong></p>
-    <p>Games Played: <strong><span id="plays">0</span></strong></p>
-    <p>Status: <strong><span id="status">Not Qualified</span></strong></p>
+<div class="container">
 
-    <!-- Progress bar -->
-    <div id="progress-container">
-      <div id="progress-bar"></div>
-    </div>
+  <!-- DASHBOARD -->
+  <div class="card">
+    <h3>Dashboard</h3>
+    <p>User: <strong id="userPhone"></strong></p>
+    <p>Points: <strong id="points">0</strong></p>
+    <p>Estimated Value: ₦<strong id="naira">0</strong></p>
+    <p>Games Played: <strong id="plays">0</strong></p>
+    <p>Status: <strong id="status">Not Qualified</strong></p>
 
-    <div class="buttons">
-      <button id="mineBtn">💎 Start Mining 💎</button>
-      <button onclick="redeem()">Redeem Rewards</button>
-      <button onclick="howTo()">How to Qualify</button>
-      <button id="restartBtn">🔄 Restart Game</button>
+    <div class="progress">
+      <div class="progress-bar" id="progressBar"></div>
     </div>
   </div>
 
-  <script src="app.js"></script>
+  <!-- ACTION BUTTONS -->
+  <div class="card actions">
+    <button onclick="mine()">⛏️ Mine</button>
+    <button onclick="showWithdraw()">💸 Withdraw</button>
+    <button onclick="howTo()">❓ How To Qualify</button>
+  </div>
+
+  <!-- WITHDRAW FORM -->
+  <div class="card" id="withdrawForm">
+    <h3>Withdraw</h3>
+
+    <input type="text" id="bank" placeholder="Bank Name">
+    <input type="number" id="account" placeholder="Account Number">
+    <input type="number" id="phone" placeholder="Phone Number">
+
+    <button onclick="submitWithdraw()">Submit</button>
+
+    <!-- WhatsApp button -->
+    <button id="whatsappBtn" onclick="sendToWhatsApp()">Send to WhatsApp Channel</button>
+
+    <p style="font-size:13px">
+      Follow our WhatsApp channel for instructions to get your code and withdraw funds.
+    </p>
+  </div>
+
+</div>
+
+<script src="app.js"></script>
 </body>
 </html>
