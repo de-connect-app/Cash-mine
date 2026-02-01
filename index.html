@@ -87,6 +87,15 @@ input{
 
 <body>
 
+<script>
+// ---------------------------
+// Redirect to login if user not logged in
+// ---------------------------
+if (!localStorage.getItem('userPhone')) {
+    window.location.href = 'login.html';
+}
+</script>
+
 <div class="app-name">Cash‑MINE</div>
 
 <div class="container">
