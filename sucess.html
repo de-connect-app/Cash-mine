@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cash-MINE - Withdrawal Successful</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * { margin:0; padding:0; box-sizing:border-box; }
+    body {
+      font-family: 'Inter', system-ui, sans-serif;
+      background: #f5f7fa;
+      color: #1e293b;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    .container {
+      background: white;
+      border-radius: 24px;
+      padding: 40px 24px;
+      width: 100%;
+      max-width: 420px;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.12);
+      text-align: center;
+      animation: fadeIn 0.7s ease-out;
+    }
+    @keyframes fadeIn {
+      from { opacity:0; transform:scale(0.95); }
+      to { opacity:1; transform:scale(1); }
+    }
+    .success-icon {
+      font-size: 80px;
+      color: #10b981;
+      margin-bottom: 24px;
+      animation: bounce 1.2s ease;
+    }
+    @keyframes bounce {
+      0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+      40% { transform: translateY(-20px); }
+      60% { transform: translateY(-10px); }
+    }
+    h1 {
+      font-size: 28px;
+      font-weight: 700;
+      color: #0f172a;
+      margin-bottom: 16px;
+    }
+    .amount {
+      font-size: 36px;
+      font-weight: 800;
+      color: #10b981;
+      margin: 16px 0;
+    }
+    .details-card {
+      background: #f8fafc;
+      border-radius: 16px;
+      padding: 20px;
+      margin: 24px 0;
+      text-align: left;
+    }
+    .detail-row {
+      display: flex;
+      justify-content: space-between;
+      margin: 12px 0;
+      font-size: 15px;
+    }
+    .detail-label { color: #64748b; font-weight: 500; }
+    .detail-value { font-weight: 600; text-align: right; word-break: break-all; }
+    .message {
+      font-size: 15px;
+      color: #475569;
+      line-height: 1.6;
+      margin: 24px 0;
+    }
+    button {
+      width: 100%;
+      padding: 16px;
+      background: #3b82f6;
+      color: white;
+      border: none;
+      border-radius: 12px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      box-shadow: 0 4px 12px rgba(59,130,246,0.25);
+    }
+    button:hover { background: #2563eb; transform: translateY(-1px); }
+    button:active { transform: translateY(0); }
+    .footer-note {
+      margin-top: 32px;
+      font-size: 13px;
+      color: #64748b;
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <div class="success-icon">✅</div>
+  <h1>Withdrawal Successful!</h1>
+
+  <div class="amount">
+    ₦<span id="withdrawnAmount">0</span>
+  </div>
+
+  <div class="details-card">
+    <div class="detail-row">
+      <span class="detail-label">Bank Name</span>
+      <span class="detail-value" id="showBank">N/A</span>
+    </div>
+    <div class="detail-row">
+      <span class="detail-label">Account Number</span>
+      <span class="detail-value" id="showAccount">N/A</span>
+    </div>
+    <div class="detail-row">
+      <span class="detail-label">Phone Number</span>
+      <span class="detail-value" id="showPhone">N/A</span>
+    </div>
+  </div>
+
+  <p class="message">
+    Your withdrawal request has been processed successfully.<br>
+    Funds should reflect in your account within the next few minutes.<br>
+    Thank you for using Cash-MINE.
+  </p>
+
+  <button onclick="window.location.href='index.html'">Back to Dashboard</button>
+
+  <p class="footer-note">
+    For support, contact our team via the Support Channel.
+  </p>
+</div>
+
+<script>
+  // Load saved withdraw details from localStorage
+  const bank = localStorage.getItem("withdraw_bank") || "N/A";
+  const account = localStorage.getItem("withdraw_account") || "N/A";
+  const phone = localStorage.getItem("withdraw_phone") || "N/A";
+
+  // Calculate withdrawn amount (same logic as dashboard)
+  let points = Number(localStorage.getItem('points')) || 0;
+  const naira = Math.floor((points / 100) * 150);
+
+  document.getElementById("withdrawnAmount").innerText = naira.toLocaleString();
+  document.getElementById("showBank").innerText = bank;
+  document.getElementById("showAccount").innerText = account;
+  document.getElementById("showPhone").innerText = phone;
+
+  // Optional: clear withdraw data after showing (security feel)
+  // localStorage.removeItem("withdraw_bank");
+  // localStorage.removeItem("withdraw_account");
+  // localStorage.removeItem("withdraw_phone");
+</script>
+
+</body>
+</html>

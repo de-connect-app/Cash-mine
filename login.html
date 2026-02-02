@@ -2,81 +2,133 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Cash-MINE Login</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cash-MINE - Login</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
+    * { margin:0; padding:0; box-sizing:border-box; }
     body {
-      margin: 0;
-      font-family: Arial, sans-serif;
-      background: #0a2a66; /* dark blue */
+      font-family: 'Inter', system-ui, sans-serif;
+      background: linear-gradient(135deg, #0d1b4c 0%, #1e3a8a 100%);
+      min-height: 100vh;
       color: #fff;
       display: flex;
-      justify-content: center;
       align-items: center;
-      height: 100vh;
+      justify-content: center;
+      padding: 20px;
     }
-
-    .login-card {
-      background: #fff;
-      color: #000;
-      padding: 30px;
-      border-radius: 12px;
-      max-width: 400px;
+    .container {
+      background: rgba(255,255,255,0.95);
+      backdrop-filter: blur(10px);
+      border-radius: 24px;
+      padding: 32px 24px;
       width: 100%;
+      max-width: 420px;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+      color: #1e293b;
+      animation: fadeIn 0.6s ease-out;
+    }
+    @keyframes fadeIn { from { opacity:0; transform:translateY(20px); } to { opacity:1; transform:translateY(0); } }
+    h2 {
       text-align: center;
-      box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+      margin-bottom: 32px;
+      font-size: 28px;
+      font-weight: 700;
+      color: #0f172a;
     }
-
-    .login-card input {
-      padding: 12px;
-      margin: 8px 0;
-      width: 90%;
+    .form-group {
+      position: relative;
+      margin-bottom: 24px;
+    }
+    .form-group input {
+      width: 100%;
+      padding: 16px 16px 16px 16px;
+      border: 1.5px solid #cbd5e1;
+      border-radius: 12px;
       font-size: 16px;
-      border-radius: 8px;
-      border: 1px solid #ccc;
+      background: #f8fafc;
+      transition: all 0.2s;
     }
-
-    .login-card button {
-      padding: 12px 20px;
-      background: #1f6fff;
-      color: #fff;
+    .form-group input:focus {
+      outline: none;
+      border-color: #3b82f6;
+      box-shadow: 0 0 0 3px rgba(59,130,246,0.15);
+    }
+    .form-group label {
+      position: absolute;
+      left: 16px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #64748b;
+      pointer-events: none;
+      transition: all 0.2s;
+    }
+    .form-group input:focus + label,
+    .form-group input:not(:placeholder-shown) + label {
+      top: -10px;
+      left: 12px;
+      font-size: 12px;
+      padding: 0 6px;
+      background: white;
+      color: #3b82f6;
+    }
+    button {
+      width: 100%;
+      padding: 16px;
+      background: #3b82f6;
+      color: white;
       border: none;
-      border-radius: 10px;
+      border-radius: 12px;
       font-size: 16px;
+      font-weight: 600;
       cursor: pointer;
-      margin-top: 10px;
+      transition: all 0.2s;
+      box-shadow: 0 4px 12px rgba(59,130,246,0.25);
     }
-
+    button:hover { background: #2563eb; transform: translateY(-1px); }
+    button:active { transform: translateY(0); }
     #generatedCode {
-      margin-top: 15px;
-      font-weight: bold;
-      font-size: 20px;
-      color: #1f6fff;
+      margin: 24px 0;
+      text-align: center;
+      font-size: 24px;
+      font-weight: 700;
+      color: #3b82f6;
     }
-
     .copy-btn {
-      margin-top: 8px;
-      background: #4da6ff;
+      margin-top: 16px;
+      background: #10b981;
     }
   </style>
 </head>
 <body>
 
-  <div class="login-card">
-    <h2>Cash-MINE Login</h2>
-    <input type="text" id="name" placeholder="Enter your Name" required>
-    <input type="text" id="surname" placeholder="Enter your Surname" required>
-    <input type="text" id="username" placeholder="Choose a Username" required>
-    <input type="text" id="phone" placeholder="Enter your Phone Number" required>
-    <br>
-    <button onclick="generateCode()">Generate Code</button>
+  <div class="container">
+    <h2>Welcome to Cash-MINE</h2>
+
+    <div class="form-group">
+      <input type="text" id="name" placeholder=" " required>
+      <label>First Name</label>
+    </div>
+    <div class="form-group">
+      <input type="text" id="surname" placeholder=" " required>
+      <label>Surname</label>
+    </div>
+    <div class="form-group">
+      <input type="text" id="username" placeholder=" " required>
+      <label>Username</label>
+    </div>
+    <div class="form-group">
+      <input type="tel" id="phone" placeholder=" " required pattern="\d{11}">
+      <label>Phone Number (11 digits)</label>
+    </div>
+
+    <button onclick="generateCode()">Generate Login Code</button>
 
     <div id="generatedCode"></div>
     <button class="copy-btn" onclick="copyCode()">Copy Code</button>
   </div>
 
   <script>
-    // Redirect if already logged in
     if(localStorage.getItem('username')) {
       window.location.href = 'index.html';
     }
@@ -90,43 +142,50 @@
       const phone = document.getElementById('phone').value.trim();
 
       if(!name || !surname || !username || !/^\d{11}$/.test(phone)) {
-        alert("Please enter valid Name, Surname, Username and 11-digit Phone Number");
+        alert("Please fill all fields correctly.\nPhone must be exactly 11 digits.");
         return;
       }
 
-      // Generate random 4-character code
       const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
       let code = '';
-      for(let i=0; i<4; i++){
+      for(let i = 0; i < 6; i++){  // 6 characters for better security feel
         code += chars.charAt(Math.floor(Math.random()*chars.length));
       }
 
       currentCode = code;
-      document.getElementById('generatedCode').innerText = "Your Code: " + code;
+      document.getElementById('generatedCode').innerText = "Your Login Code: " + code;
 
-      // Save user info in localStorage
       localStorage.setItem('name', name);
       localStorage.setItem('surname', surname);
       localStorage.setItem('username', username);
       localStorage.setItem('userPhone', phone);
       localStorage.setItem('userCode', code);
 
-      // Optional: redirect after 2 seconds
+      // Save to allUsers for admin
+      let users = JSON.parse(localStorage.getItem('allUsers')) || [];
+      users.push({
+        phone: phone,
+        name: name,
+        surname: surname,
+        username: username,
+        code: code,
+        timestamp: new Date().toISOString()
+      });
+      localStorage.setItem('allUsers', JSON.stringify(users));
+
       setTimeout(() => {
         window.location.href = 'index.html';
-      }, 2000);
+      }, 2200);
     }
 
     function copyCode() {
-      if(!currentCode){
-        alert("Generate a code first!");
-        return;
-      }
+      if(!currentCode) return alert("Generate code first");
       navigator.clipboard.writeText(currentCode).then(() => {
-        alert("Code copied to clipboard: " + currentCode);
+        alert("Code copied: " + currentCode);
+      }).catch(() => {
+        alert("Copy failed. Please copy manually: " + currentCode);
       });
     }
   </script>
-
 </body>
 </html>

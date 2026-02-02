@@ -43,46 +43,6 @@ function mine() {
 }
 
 // ---------------------------
-// Show Withdraw Form
-// ---------------------------
-function showWithdraw() {
-  document.getElementById('withdrawForm').style.display = 'block';
-  document.getElementById('whatsappBtn').style.display = 'none'; // Hide WhatsApp initially
-}
-
-// ---------------------------
-// Submit Withdraw Details
-// ---------------------------
-function submitWithdraw() {
-  const bank = document.getElementById('bank').value.trim();
-  const account = document.getElementById('account').value.trim();
-  const phone = document.getElementById('phone').value.trim();
-
-  if (!bank || !account || !phone) {
-    alert('Please fill all fields');
-    return;
-  }
-
-  // Save info in localStorage (optional)
-  localStorage.setItem('bank', bank);
-  localStorage.setItem('account', account);
-  localStorage.setItem('phone', phone);
-
-  alert("Your details have been submitted.\nPlease follow our WhatsApp channel for your code and instructions on how to withdraw.");
-
-  // Show WhatsApp button
-  document.getElementById('whatsappBtn').style.display = 'block';
-}
-
-// ---------------------------
-// Send to WhatsApp Channel
-// ---------------------------
-function sendToWhatsApp() {
-  const url = "https://whatsapp.com/channel/0029Vb5zfLhEKyZQG98VNt2V"; // Updated channel
-  window.open(url, "_blank");
-}
-
-// ---------------------------
 // How to Qualify Button
 // ---------------------------
 function howTo() {
@@ -94,3 +54,21 @@ function howTo() {
     "• Follow our WhatsApp channel to get your code and instructions"
   );
 }
+
+/* 
+// The old withdraw functions are now disabled
+// ---------------------------
+// Show Withdraw Form
+// ---------------------------
+// function showWithdraw() { ... }
+
+// ---------------------------
+// Submit Withdraw Details
+// ---------------------------
+// function submitWithdraw() { ... }
+
+// ---------------------------
+// Send to WhatsApp Channel
+// ---------------------------
+// function sendToWhatsApp() { ... }
+*/

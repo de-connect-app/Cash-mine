@@ -1,146 +1,384 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<title>Cash-MINE</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cash-MINE - Dashboard</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * { margin:0; padding:0; box-sizing:border-box; }
+    body {
+      font-family: 'Inter', system-ui, sans-serif;
+      background: #f5f7fa;
+      color: #1e293b;
+      min-height: 100vh;
+      padding-bottom: 90px;
+    }
 
-<style>
-body{
-  margin:0;
-  font-family: Arial, sans-serif;
-  background:#081c3a;
-  color:#000;
-}
+    /* Top Bar */
+    .top-bar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      background: white;
+      padding: 16px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+      z-index: 1000;
+    }
+    .menu-icon {
+      font-size: 28px;
+      cursor: pointer;
+      color: #3b82f6;
+    }
+    .brand-header {
+      font-size: 22px;
+      font-weight: 800;
+      color: #0f172a;
+      letter-spacing: -0.5px;
+    }
+    .user-tag {
+      font-size: 14px;
+      color: #64748b;
+      margin-top: 2px;
+    }
 
-.app-name{
-  position:fixed;
-  top:10px;
-  right:15px;
-  font-weight:bold;
-  color:#000;
-}
+    /* Header / Balance */
+    .header {
+      background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+      color: white;
+      padding: 80px 24px 40px;
+      text-align: center;
+      border-bottom-left-radius: 32px;
+      border-bottom-right-radius: 32px;
+      margin-top: 60px; /* space for top bar */
+    }
+    .header h1 { font-size: 42px; font-weight: 700; margin: 8px 0; }
+    .balance-label { font-size: 14px; opacity: 0.85; margin-top: 12px; }
 
-.container{
-  max-width:420px;
-  margin:80px auto;
-}
+    .container { padding: 24px; max-width: 480px; margin: 0 auto; }
 
-.card{
-  background:#fff;
-  padding:20px;
-  border-radius:12px;
-  margin-bottom:15px;
-}
+    .card {
+      background: white;
+      border-radius: 20px;
+      padding: 24px;
+      margin-bottom: 24px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+    }
 
-.actions button{
-  width:100%;
-  padding:14px;
-  margin-top:10px;
-  border:none;
-  border-radius:10px;
-  font-size:16px;
-  background:#4da3ff;
-  color:#fff;
-  cursor:pointer;
-}
+    .actions {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin: 32px 0;
+    }
+    .action-btn {
+      padding: 18px;
+      font-size: 16px;
+      font-weight: 600;
+      border-radius: 16px;
+      border: none;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+    .mine-btn { background: #3b82f6; color: white; box-shadow: 0 6px 16px rgba(59,130,246,0.3); }
+    .withdraw-btn { background: white; border: 2px solid #3b82f6; color: #3b82f6; }
 
-#withdrawForm{
-  display:none;
-}
+    /* Purchased Code Section */
+    .code-section {
+      margin: 32px 0;
+      text-align: center;
+    }
+    .code-input {
+      width: 100%;
+      padding: 16px;
+      font-size: 18px;
+      text-align: center;
+      border: 2px solid #cbd5e1;
+      border-radius: 12px;
+      margin: 12px 0;
+    }
 
-input{
-  width:100%;
-  padding:12px;
-  margin:8px 0;
-  font-size:15px;
-}
+    /* Profile Modal */
+    .profile-modal {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0,0,0,0.6);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 2000;
+    }
+    .profile-card {
+      background: white;
+      border-radius: 20px;
+      width: 90%;
+      max-width: 420px;
+      padding: 32px 24px;
+      position: relative;
+    }
+    .close-btn {
+      position: absolute;
+      top: 16px; right: 20px;
+      font-size: 28px;
+      cursor: pointer;
+      color: #64748b;
+    }
+    .profile-field {
+      margin: 16px 0;
+      font-size: 15px;
+    }
+    .profile-field strong { color: #0f172a; }
+    .email-form {
+      margin-top: 24px;
+      padding-top: 20px;
+      border-top: 1px solid #e2e8f0;
+    }
+    .email-input {
+      width: 100%;
+      padding: 14px;
+      border: 1.5px solid #cbd5e1;
+      border-radius: 12px;
+      margin: 12px 0;
+      font-size: 15px;
+    }
 
-.progress{
-  background:#ddd;
-  height:10px;
-  border-radius:10px;
-  overflow:hidden;
-}
-
-.progress-bar{
-  height:100%;
-  width:0%;
-  background:#1f6fff;
-}
-
-/* WhatsApp button hidden initially */
-#whatsappBtn{
-  display:none;
-  width:100%;
-  padding:12px;
-  margin-top:10px;
-  font-size:16px;
-  border:none;
-  border-radius:10px;
-  background:#25D366;
-  color:white;
-  cursor:pointer;
-}
-</style>
+    /* Bottom Nav */
+    .bottom-nav {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: white;
+      border-top: 1px solid #e2e8f0;
+      display: flex;
+      justify-content: space-around;
+      padding: 12px 0;
+      box-shadow: 0 -4px 16px rgba(0,0,0,0.06);
+      z-index: 1000;
+    }
+    .nav-item {
+      color: #64748b;
+      text-decoration: none;
+      font-size: 13px;
+      font-weight: 500;
+      text-align: center;
+      padding: 6px 12px;
+      border-radius: 12px;
+    }
+    .nav-item.active { color: #3b82f6; background: #eff6ff; font-weight: 600; }
+    .nav-item span { font-size: 20px; display: block; margin-bottom: 4px; }
+  </style>
 </head>
-
 <body>
 
 <script>
-// ---------------------------
-// Redirect to login if user not logged in
-// ---------------------------
-if (!localStorage.getItem('userPhone')) {
+  if (!localStorage.getItem('userPhone')) {
     window.location.href = 'login.html';
-}
+  }
 </script>
 
-<div class="app-name">Cash‑MINE</div>
+<!-- Top Bar -->
+<div class="top-bar">
+  <span class="menu-icon" onclick="openProfile()">☰</span>
+  <div style="text-align:center;">
+    <div class="brand-header">CASH-MINE</div>
+    <div class="user-tag">Logged in as @<span id="usernameDisplay"></span></div>
+  </div>
+  <div style="width:40px;"></div> <!-- spacer -->
+</div>
+
+<div class="header">
+  <h1>₦<span id="naira">0</span></h1>
+  <p class="balance-label">Available Balance</p>
+</div>
 
 <div class="container">
 
-  <!-- DASHBOARD -->
   <div class="card">
-    <h3>Dashboard</h3>
-    <p>User: <strong id="userPhone"></strong></p>
-    <p>Points: <strong id="points">0</strong></p>
-    <p>Estimated Value: ₦<strong id="naira">0</strong></p>
-    <p>Games Played: <strong id="plays">0</strong></p>
-    <p>Status: <strong id="status">Not Qualified</strong></p>
+    <div class="info-row">
+      <span class="info-label">User</span>
+      <span class="info-value" id="userPhone">Loading...</span>
+    </div>
+    <div class="info-row">
+      <span class="info-label">Points Mined</span>
+      <span class="info-value" id="points">0</span>
+    </div>
+    <div class="info-row">
+      <span class="info-label">Games Played</span>
+      <span class="info-value" id="plays">0</span>
+    </div>
+    <div class="info-row">
+      <span class="info-label">Status</span>
+      <span id="status" class="status-not">Not Qualified</span>
+    </div>
 
-    <div class="progress">
+    <div class="progress-container">
       <div class="progress-bar" id="progressBar"></div>
     </div>
   </div>
 
-  <!-- ACTION BUTTONS -->
-  <div class="card actions">
-    <button onclick="mine()">⛏️ Mine</button>
-    <button onclick="showWithdraw()">💸 Withdraw</button>
-    <button onclick="howTo()">❓ How To Qualify</button>
+  <div class="actions">
+    <button class="action-btn mine-btn" onclick="mine()">
+      <span>⛏️</span> Mine Now
+    </button>
+    <button class="action-btn withdraw-btn" onclick="window.location.href='redeem.html'">
+      New Withdrawal
+    </button>
   </div>
 
-  <!-- WITHDRAW FORM -->
-  <div class="card" id="withdrawForm">
-    <h3>Withdraw</h3>
-
-    <input type="text" id="bank" placeholder="Bank Name">
-    <input type="number" id="account" placeholder="Account Number">
-    <input type="number" id="phone" placeholder="Phone Number">
-
-    <button onclick="submitWithdraw()">Submit</button>
-
-    <!-- WhatsApp button -->
-    <button id="whatsappBtn" onclick="sendToWhatsApp()">Send to WhatsApp Channel</button>
-
-    <p style="font-size:13px">
-      Follow our WhatsApp channel for instructions to get your code and withdraw funds.
+  <!-- Purchased Code Area -->
+  <div class="card code-section">
+    <h3 style="margin-bottom:12px;">Already have a code?</h3>
+    <p style="font-size:14px; color:#64748b; margin-bottom:16px;">
+      Enter your purchased code to withdraw your current balance instantly
     </p>
+    <input type="text" id="quickCode" class="code-input" placeholder="Enter code here" maxlength="6">
+    <button class="primary-btn" style="margin-top:12px;" onclick="quickWithdraw()">Withdraw Now</button>
   </div>
 
 </div>
 
-<script src="app.js"></script>
+<!-- Bottom Navigation -->
+<nav class="bottom-nav">
+  <a href="index.html" class="nav-item active">
+    <span>🏠</span>Home
+  </a>
+  <a href="redeem.html" class="nav-item">
+    <span>💰</span>Withdraw
+  </a>
+  <a href="#" onclick="howTo()" class="nav-item">
+    <span>❓</span>How to
+  </a>
+  <a href="https://whatsapp.com/channel/0029Vb5zfLhEKyZQG98VNt2V" target="_blank" class="nav-item">
+    <span>💬</span>Support
+  </a>
+</nav>
+
+<!-- Profile Modal -->
+<div class="profile-modal" id="profileModal">
+  <div class="profile-card">
+    <span class="close-btn" onclick="closeProfile()">×</span>
+    <h2 style="text-align:center; margin-bottom:24px;">Profile</h2>
+
+    <div class="profile-field"><strong>Name:</strong> <span id="profileName"></span> <span id="profileSurname"></span></div>
+    <div class="profile-field"><strong>Username:</strong> @<span id="profileUsername"></span></div>
+    <div class="profile-field"><strong>Phone:</strong> <span id="profilePhone"></span></div>
+
+    <div class="email-form">
+      <h3 style="margin-bottom:12px;">Add Email for Free Cash</h3>
+      <p style="font-size:13px; color:#64748b; margin-bottom:12px;">
+        Add your email and get instant cash reward added to your balance!
+      </p>
+      <input type="email" id="emailInput" class="email-input" placeholder="your.email@example.com">
+      <button class="success-btn" onclick="addEmailReward()">Claim Free Cash</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ────────────────────────────────────────────────
+let points = Number(localStorage.getItem('points')) || 0;
+let plays = Number(localStorage.getItem('plays')) || 0;
+
+document.getElementById('userPhone').innerText = localStorage.getItem('userPhone') || 'Guest';
+document.getElementById('usernameDisplay').innerText = localStorage.getItem('username') || 'Guest';
+
+document.getElementById('profileName').innerText = localStorage.getItem('name') || 'N/A';
+document.getElementById('profileSurname').innerText = localStorage.getItem('surname') || '';
+document.getElementById('profileUsername').innerText = localStorage.getItem('username') || 'N/A';
+document.getElementById('profilePhone').innerText = localStorage.getItem('userPhone') || 'N/A';
+
+function updateUI() {
+  document.getElementById('points').innerText = points;
+  document.getElementById('plays').innerText = plays;
+
+  const naira = Math.floor((points / 100) * 150);
+  document.getElementById('naira').innerText = naira.toLocaleString();
+
+  const progress = Math.min((points / 500) * 100, 100);
+  document.getElementById('progressBar').style.width = progress + '%';
+
+  const statusEl = document.getElementById('status');
+  if (points >= 500) {
+    statusEl.innerText = 'Qualified';
+    statusEl.className = 'status-qualified';
+  } else {
+    statusEl.innerText = 'Not Qualified';
+    statusEl.className = 'status-not';
+  }
+}
+updateUI();
+
+// ────────────────────────────────────────────────
+function mine() {
+  const btn = document.querySelector('.mine-btn');
+  const original = btn.innerHTML;
+  btn.innerHTML = '<span>⏳</span> Mining...';
+  btn.disabled = true;
+
+  setTimeout(() => {
+    points += 100;
+    plays += 1;
+    localStorage.setItem('points', points);
+    localStorage.setItem('plays', plays);
+    updateUI();
+    btn.innerHTML = original;
+    btn.disabled = false;
+  }, 1200);
+}
+
+// ────────────────────────────────────────────────
+function howTo() {
+  alert("How to Qualify & Withdraw:\n\n1. Mine points\n2. Reach 500+ points\n3. Pay ₦7,000 fee to get code\n4. Enter code to withdraw\n\nSupport is 24/7 via channel.");
+}
+
+// ────────────────────────────────────────────────
+// Quick Withdraw with Purchased Code
+function quickWithdraw() {
+  const code = document.getElementById('quickCode').value.trim().toUpperCase();
+  const correct = "ABCD1234"; // ← CHANGE TO YOUR REAL CODE or make it dynamic
+
+  if (!code) return alert("Enter your code");
+  if (code === correct) {
+    alert("Code verified! Withdrawal processed.\nCheck your account.");
+    window.location.href = 'success.html';
+  } else {
+    alert("Invalid code. Please check and try again.");
+  }
+}
+
+// ────────────────────────────────────────────────
+// Profile Modal
+function openProfile() {
+  document.getElementById('profileModal').style.display = 'flex';
+}
+function closeProfile() {
+  document.getElementById('profileModal').style.display = 'none';
+}
+
+// ────────────────────────────────────────────────
+// Add Email → Fake Reward
+function addEmailReward() {
+  const email = document.getElementById('emailInput').value.trim();
+  if (!email || !email.includes('@')) return alert("Please enter a valid email");
+
+  // Fake reward: random ₦500–₦2000
+  const reward = Math.floor(Math.random() * 1500) + 500;
+  points += reward * (100 / 150); // reverse calc to points
+  localStorage.setItem('points', points);
+  updateUI();
+
+  alert(`Thank you! ₦${reward} free cash added to your balance!\nCheck your new balance.`);
+  document.getElementById('emailInput').value = '';
+}
+</script>
 </body>
 </html>

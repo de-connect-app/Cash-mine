@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Withdrawal Successful – CASH-MINE</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="app" style="max-width:420px; margin:50px auto; padding:30px; background:#fff; border-radius:16px; text-align:center; box-shadow:0 10px 25px rgba(0,0,0,0.1);">
+
+  <h1 style="color:#28a745; font-size:28px;">Cash-MINE Withdraw Successful ✅</h1>
+
+  <div style="margin:30px 0; font-size:18px;">
+    <p><strong>Bank Name:</strong> <span id="showBank"></span></p>
+    <p><strong>Account Number:</strong> <span id="showAccount"></span></p>
+    <p><strong>Phone Number:</strong> <span id="showPhone"></span></p>
+  </div>
+
+  <p style="font-size:16px; color:#555; margin:30px 0;">
+    Your withdrawal has been processed.<br>
+    Please check your bank balance soon.
+  </p>
+
+  <button onclick="resetAndLogout()" style="padding:16px 30px; background:#dc3545; color:white; border:none; border-radius:10px; font-size:18px; font-weight:bold; cursor:pointer;">
+    Reset & Withdraw Again
+  </button>
+
+</div>
+
+<script>
+  // Load saved details
+  document.getElementById("showBank").innerText = localStorage.getItem("withdraw_bank") || "N/A";
+  document.getElementById("showAccount").innerText = localStorage.getItem("withdraw_account") || "N/A";
+  document.getElementById("showPhone").innerText = localStorage.getItem("withdraw_phone") || "N/A";
+
+  function resetAndLogout() {
+    // Clear only withdraw-related + login data
+    localStorage.removeItem("withdraw_bank");
+    localStorage.removeItem("withdraw_account");
+    localStorage.removeItem("withdraw_phone");
+    localStorage.removeItem("userPhone");
+    localStorage.removeItem("username");
+    localStorage.removeItem("name");
+    localStorage.removeItem("surname");
+    localStorage.removeItem("userCode");
+    // Optional: keep points if you want persistence, or clear them too
+    // localStorage.removeItem("points");
+    // localStorage.removeItem("plays");
+
+    alert("Session reset. You can now log in again.");
+    window.location.href = "login.html";
+  }
+</script>
+
+</body>
+</html>

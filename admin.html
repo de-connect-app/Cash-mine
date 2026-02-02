@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Cash-MINE Admin</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+body{
+  margin:0;
+  font-family: Arial, sans-serif;
+  background:#081c3a;
+  color:#fff;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  min-height:100vh;
+  padding:20px;
+}
+
+.card{
+  background:#fff;
+  color:#000;
+  padding:25px;
+  border-radius:12px;
+  width:90%;
+  max-width:500px;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+}
+
+input, button{
+  width:100%;
+  padding:12px;
+  margin-top:10px;
+  font-size:16px;
+  border-radius:8px;
+  border:1px solid #ccc;
+}
+
+button{
+  background:#1f6fff;
+  color:#fff;
+  border:none;
+  cursor:pointer;
+  font-weight:bold;
+}
+
+.admin{
+  display:none;
+}
+
+.user-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+  border-bottom: 1px solid #eee;
+  margin: 8px 0;
+}
+
+.user-phone {
+  cursor: pointer;
+  color: #1f6fff;
+  font-weight: bold;
+}
+
+.delete-btn {
+  background: #dc3545;
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.refresh-btn {
+  background: #6c757d;
+  margin-top: 20px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="card" id="login">
+  <h3>Admin Login</h3>
+  <input type="password" id="pin" placeholder="Enter Admin PIN">
+  <button onclick="login()">Login</button>
+</div>
+
+<div class="card admin" id="panel">
+  <h3>Cash-MINE Admin Panel</h3>
+
+  <p><strong>Current Active User Phone:</strong> <span id="user">None</span></p>
+  <p><strong>Points:</strong> <span id="points">0</span></p>
+  <p><strong>Games:</strong> <span id="plays">0</span></p>
+
+  <hr style="margin:20px 0;">
+
+  <h3>Registered Users</h3>
+  <div id="userList"></div>
+
+  <button class="refresh-btn" onclick="clearAllUsers()">Refresh All / Clear All Sessions</button>
+
+  <hr style="margin:20px 0;">
+
+  <button onclick="resetPoints()">Reset Points (Current User)</button>
+  <button onclick="logoutUser()">Force Logout (Current User)</button>
+  <button onclick="clearAll()">Clear All Data (Full Reset)</button>
+</div>
+
+<script>
+const ADMIN_PIN = "Thankgod911##"; // Updated PIN
+
+function login(){
+  const pin = document.getElementById('pin').value;
+  if(pin !== ADMIN_PIN){
+    alert("Wrong PIN");
+    return;
+  }
+  document.getElementById('login').style.display = "none";
+  document.getElementById('panel').style.display = "block";
+  loadData();
+  loadUserList();
+}
+
+function loadData(){
+  // Current browser's active user
+  document.getElementById('user').innerText = localStorage.getItem('userPhone') || "No user";
+  document.getElementById('points').innerText = localStorage.getItem('points') || 0;
+  document.getElementById('plays').innerText = localStorage.getItem('plays') || 0;
+}
+
+function loadUserList() {
+  let users = JSON.parse(localStorage.getItem('allUsers')) || [];
+  const listDiv = document.getElementById('userList');
+  listDiv.innerHTML = '';
+
+  if (users.length === 0) {
+    listDiv.innerHTML = '<p style="color:#666;">No users registered yet.</p>';
+    return;
+  }
+
+  users.forEach((user, index) => {
+    const item = document.createElement('div');
+    item.className = 'user-item';
+
+    const phoneSpan = document.createElement('span');
+    phoneSpan.className = 'user-phone';
+    phoneSpan.innerText = user.phone;
+    phoneSpan.onclick = () => showUserDetails(user);
+
+    const deleteBtn = document.createElement('button');
+    deleteBtn.className = 'delete-btn';
+    deleteBtn.innerText = 'Delete';
+    deleteBtn.onclick = () => deleteUser(index);
+
+    item.appendChild(phoneSpan);
+    item.appendChild(deleteBtn);
+    listDiv.appendChild(item);
+  });
+}
+
+function showUserDetails(user) {
+  alert(
+    `User Details:\n\n` +
+    `Phone: ${user.phone}\n` +
+    `Name: ${user.name || 'N/A'} ${user.surname || ''}\n` +
+    `Username: ${user.username || 'N/A'}\n` +
+    `Login Code: ${user.code || 'N/A'}\n` +
+    `Registered: ${new Date(user.timestamp).toLocaleString()}\n\n` +
+    `Withdraw Info (if any):\n` +
+    `Bank: ${localStorage.getItem('withdraw_bank') || 'N/A'}\n` +
+    `Account: ${localStorage.getItem('withdraw_account') || 'N/A'}\n` +
+    `Withdraw Phone: ${localStorage.getItem('withdraw_phone') || 'N/A'}`
+  );
+}
+
+function deleteUser(index) {
+  if (!confirm("Delete this user? This cannot be undone.")) return;
+
+  let users = JSON.parse(localStorage.getItem('allUsers')) || [];
+  users.splice(index, 1);
+  localStorage.setItem('allUsers', JSON.stringify(users));
+  loadUserList();
+  alert("User deleted.");
+}
+
+function clearAllUsers() {
+  if (!confirm("Clear ALL registered users and sessions?")) return;
+
+  localStorage.removeItem('allUsers');
+  loadUserList();
+  alert("All user sessions cleared.");
+}
+
+function resetPoints(){
+  localStorage.setItem('points', 0);
+  localStorage.setItem('plays', 0);
+  loadData();
+  alert("Points reset for current user.");
+}
+
+function logoutUser(){
+  localStorage.removeItem('userPhone');
+  localStorage.removeItem('username');
+  localStorage.removeItem('name');
+  localStorage.removeItem('surname');
+  localStorage.removeItem('userCode');
+  alert("Current user logged out.");
+}
+
+function clearAll(){
+  if (confirm("Clear ALL local data? This resets everything.")) {
+    localStorage.clear();
+    alert("All data cleared.");
+    loadData();
+    loadUserList();
+  }
+}
+</script>
+
+</body>
+</html>
